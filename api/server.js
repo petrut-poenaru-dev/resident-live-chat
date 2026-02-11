@@ -3,13 +3,13 @@ import http from "http";
 import cors from "cors";
 import { Server as SocketIOServer } from "socket.io";
 import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT
 const io = new SocketIOServer(server);
 
-dotenv.config();
 
 app.use(cors({
     origin: process.env.FRONTEND_URL,
