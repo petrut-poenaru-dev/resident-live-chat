@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { ChatComponent } from '../components/chat/chat.component';
 
 @Component({
   selector: 'app-root',
-  imports: [],
+  imports: [ChatComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

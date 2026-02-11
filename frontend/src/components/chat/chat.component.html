@@ -1,1 +1,68 @@
-<p>chat works!</p>
+<div class="chat-container">
+  <div class="chat-header">
+    <div class="chat-user">
+      <div class="avatar">
+        <span class="avatar-text">RC</span>
+      </div>
+      <div class="chat-user-info">
+        <div class="chat-user-name">Resident Live Chat</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-body">
+    <div class="messages">
+      <div
+        *ngFor="let msg of chatMessages"
+        class="message"
+        [ngClass]="{
+          'message--sent': msg.senderId === connectedSocketId,
+          'message--received': msg.senderId !== connectedSocketId
+        }"
+      >
+        <div class="message-avatar" *ngIf="msg.senderId !== connectedSocketId">
+          <span class="avatar-text">
+            U
+          </span>
+        </div>
+
+        <div class="message-bubble">
+          <div class="message-text">{{ msg.text }}</div>
+          <div class="message-time">{{ msg.time | date:'shortTime' }}</div>
+        </div>
+
+        <div class="message-avatar" *ngIf="msg.senderId === connectedSocketId">
+          <span class="avatar-text">
+            U
+          </span>
+        </div>
+      </div>
+
+      <div *ngIf="chatMessages.length === 0" class="empty-state">
+        Scrie un mesaj catre rezidenti
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-input">
+    <div class="chat-input-left">
+      <div class="mini-avatar">
+        <span class="avatar-text">
+          U
+        </span>
+      </div>
+    </div>
+
+    <input
+      class="input"
+      [(ngModel)]="currentMessageText"
+      placeholder="Scrie un mesaj…"
+      autocomplete="off"
+      (keyup.enter)="sendMessage()"
+    />
+
+    <button class="send-btn" type="button" (click)="sendMessage()" aria-label="Send">
+      <i class="fa-solid fa-paper-plane"></i>
+    </button>
+  </div>
+</div>
