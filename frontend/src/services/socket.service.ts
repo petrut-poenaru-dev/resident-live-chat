@@ -31,15 +31,6 @@ export class SocketService{
     });
   }
 
-  public onConnectError(): Observable<any> {
-    return new Observable((subscriber) => {
-      const connErrFunction = (err: any) => subscriber.next(err);
-      this.socket.on("connect_error", connErrFunction);
-
-      return () => this.socket.off("connect_error", connErrFunction);
-    });
-  }
-
   public onGetMessage(): Observable<ChatMessageInterface> {
     return new Observable((subscriber) => {
       const getMessage = (msg: ChatMessageInterface) => subscriber.next(msg);
