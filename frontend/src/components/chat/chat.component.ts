@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { ChatMessageInterface } from '../../interfaces/chat-message.interface';
 import { Subscription } from 'rxjs';
 import { SocketService } from '../../services/socket.service';
@@ -7,16 +7,19 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-chat',
-  imports: [CommonModule , FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
-  standalone:true
+  standalone: true
 })
-export class ChatComponent implements OnInit , OnDestroy{
+export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   public currentMessageText: string = '';
   public chatMessages: ChatMessageInterface[] = [];
   public connectedSocketId: string = '';
   private activeSubscriptions: Subscription[] = [];
+  private shouldScroll = false;
+
+  @ViewChild('messagesContainer') private messagesContainer!: ElementRef<HTMLDivElement>;
 
   constructor(private readonly socketService: SocketService) {}
 
@@ -27,21 +30,31 @@ export class ChatComponent implements OnInit , OnDestroy{
     this.activeSubscriptions.push(connectSubscription);
     const messageSubscription = this.socketService.onGetMessage().subscribe((incomingMessage) => {
       this.chatMessages.push(incomingMessage);
-
+      this.shouldScroll = true;
     });
     this.activeSubscriptions.push(messageSubscription);
+  }
+
+  public ngAfterViewChecked(): void {
+    if (this.shouldScroll) {
+      this.scrollToBottom();
+      this.shouldScroll = false;
+    }
+  }
+
+  private scrollToBottom(): void {
+    const el = this.messagesContainer.nativeElement;
+    el.scrollTop = el.scrollHeight;
   }
 
   public sendMessage(): void {
     const trimmedText = this.currentMessageText.trim();
     if (!trimmedText) return;
 
-    const payload = {
-      text: trimmedText,
-    };
-
+    const payload = { text: trimmedText };
     this.socketService.sendMessage(payload);
     this.currentMessageText = '';
+    this.shouldScroll = true;
   }
 
   public ngOnDestroy(): void {

@@ -11,7 +11,7 @@
   </div>
 
   <div class="chat-body">
-    <div class="messages">
+    <div class="messages" #messagesContainer>
       @for (msg of chatMessages; track msg) {
       <div
         class="message"
@@ -46,12 +46,11 @@
       }
     </div>
   </div>
+
   <div class="chat-input">
     <div class="chat-input-left">
       <div class="mini-avatar">
-        <span class="avatar-text">
-          U
-        </span>
+        <span class="avatar-text">U</span>
       </div>
     </div>
 
